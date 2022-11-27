@@ -16,7 +16,6 @@
 package com.google.cloud.teleport.templates;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.teleport.io.DynamicJdbcIO;
 import com.google.cloud.teleport.metadata.Template;
 import com.google.cloud.teleport.metadata.TemplateCategory;
 import com.google.cloud.teleport.templates.common.JdbcModifiedV1Converters;
@@ -25,9 +24,9 @@ import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
+import org.apache.beam.sdk.io.jdbc.JdbcIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.ValueProvider;
-import org.apache.beam.sdk.io.jdbc.JdbcIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +53,8 @@ public class JdbcModifiedV1ToBigQuery {
   /**
    * Main entry point for executing the pipeline. This will run the pipeline asynchronously. If
    * blocking execution is required, use the {@link
-   * JdbcModifiedV1ToBigQuery#run(JdbcModifiedV1Converters.JdbcModifiedV1ToBigQueryOptions)} method to start the pipeline and
-   * invoke {@code result.waitUntilFinish()} on the {@link PipelineResult}
+   * JdbcModifiedV1ToBigQuery#run(JdbcModifiedV1Converters.JdbcModifiedV1ToBigQueryOptions)} method
+   * to start the pipeline and invoke {@code result.waitUntilFinish()} on the {@link PipelineResult}
    *
    * @param args The command-line arguments to the pipeline.
    */
@@ -76,7 +75,8 @@ public class JdbcModifiedV1ToBigQuery {
    * @param options The execution parameters to the pipeline.
    * @return The result of the pipeline execution.
    */
-  private static PipelineResult run(JdbcModifiedV1Converters.JdbcModifiedV1ToBigQueryOptions options) {
+  private static PipelineResult run(
+      JdbcModifiedV1Converters.JdbcModifiedV1ToBigQueryOptions options) {
     // Create the pipeline
     Pipeline pipeline = Pipeline.create(options);
 
@@ -104,7 +104,8 @@ public class JdbcModifiedV1ToBigQuery {
                 .withFetchSize(100000)
                 .withQuery(options.getQuery())
                 .withCoder(TableRowJsonCoder.of())
-                .withRowMapper(JdbcModifiedV1Converters.getResultSetToTableRow(options.getUseColumnAlias())))
+                .withRowMapper(
+                    JdbcModifiedV1Converters.getResultSetToTableRow(options.getUseColumnAlias())))
         /*
          * Step 2: Append TableRow to an existing BigQuery table
          */
